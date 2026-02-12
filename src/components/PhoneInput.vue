@@ -10,7 +10,7 @@ import {
     ref,
     watch,
 } from 'vue'
-import type { InjectedData, Results, Translations } from '../helpers/types'
+import type { InjectedData, PhoneNumberDisplayFormat, Results, Translations } from '../helpers/types'
 
 import { defaultLocales } from '../helpers/default-locales'
 
@@ -32,6 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
     countryLocale: undefined,
     noFormattingAsYouType: false,
     autoFormat: true,
+    phoneNumberDisplayFormat: 'national',
     excludeSelectors: undefined,
 })
 
@@ -96,6 +97,11 @@ export interface Props {
      * @default false
      */
     noFormattingAsYouType?: boolean
+    /**
+     * Display format for a valid number when autoFormat is enabled
+     * @default 'national'
+     */
+    phoneNumberDisplayFormat?: PhoneNumberDisplayFormat
     /**
      * locale of country list - Ex: "fr-FR"
      * @default {string} browser locale
@@ -284,8 +290,13 @@ function handlePhoneNumberUpdate(
         })
     }
 
-    if (results.value.isValid && results.value.formatNational && autoFormat) {
-        phoneNumber.value = results.value.formatNational
+    const formattedByMode =
+        props.phoneNumberDisplayFormat === 'international'
+            ? results.value.formatInternational
+            : results.value.formatNational
+
+    if (results.value.isValid && autoFormat && formattedByMode) {
+        phoneNumber.value = formattedByMode
     } else if (!noFormattingAsYouType) {
         const asYouTypeFormatted = getAsYouTypeFormat(
             selectedCountry.value,

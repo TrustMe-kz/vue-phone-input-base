@@ -29,6 +29,8 @@ export interface InjectedData {
     results: Ref<Results>
 }
 
+export type PhoneNumberDisplayFormat = 'national' | 'international'
+
 export type Translations = typeof defaultLocales
 
 export interface Country {
