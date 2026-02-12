@@ -1,56 +1,39 @@
 {
-    "name": "base-vue-phone-input",
-    "description": "customizable vue3 phone input",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SidVerson/base-vue-phone-input.git"
-    },
-    "version": "0.1.13",
+    "name": "vue-phone-input-base",
+    "version": "1.0.0",
+    "description": "A Phone Input Component for Kazakhstan",
+    "keywords": ["phone input", "input component", "kazakhstan"],
     "type": "module",
-    "files": [
-        "dist",
-        "src"
-    ],
-    "main": "./dist/base-vue-phone-input.umd.cjs",
-    "module": "./dist/base-vue-phone-input.js",
+    "main": "dist/base-vue-phone-input.umd.cjs",
+    "module": "dist/base-vue-phone-input.js",
+    "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
             "import": "./dist/base-vue-phone-input.js",
+            "types": "./dist/index.d.ts",
             "require": "./dist/base-vue-phone-input.umd.cjs"
         }
     },
-    "types": "./dist/index.d.ts",
     "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "types": "vue-tsc ",
-        "preview": "vite preview"
+        "build:types": "vue-tsc",
+        "build": "npm run build:types && vite build",
+        "prepublish": "npm run build"
+    },
+    "files": [
+        "dist/"
+    ],
+    "devDependencies": {
+        "@types/node": "^25.2.3",
+        "@vitejs/plugin-vue": "^6.0.4",
+        "typescript": "^5.9.3",
+        "vite": "^7.3.1",
+        "vite-plugin-dts": "^4.5.4",
+        "vue-tsc": "^3.2.4"
     },
     "peerDependencies": {
-        "vue": "^3.4.37"
+        "vue": "^3.5.28"
     },
     "dependencies": {
-        "libphonenumber-js": "^1.11.7"
-    },
-    "devDependencies": {
-        "@types/node": "^22.4.0",
-        "@vitejs/plugin-vue": "^5.1.2",
-        "typescript": "^5.5.4",
-        "vite": "^5.4.1",
-        "vite-plugin-dts": "^1.4.1",
-        "vue-tsc": "^2.0.29"
-    },
-    "keywords": [
-        "vue",
-        "phone",
-        "phone-input",
-        "slots",
-        "customizable",
-        "tel",
-        "input",
-        "component",
-        "vue3",
-        "telephone"
-    ]
+        "libphonenumber-js": "^1.12.36"
+    }
 }

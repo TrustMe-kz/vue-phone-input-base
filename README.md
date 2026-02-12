@@ -1,22 +1,34 @@
-# Base vue phone input
+# vue-phone-input-base
 
-Basic phone input deeply customizable with slots
+**vue-phone-input-base** is a customizable Vue 3 phone input component with country selector, formatting, localization, and slot-based UI override support.
+
+This repository is a fork of: [base-vue-phone-input on npm](https://www.npmjs.com/package/base-vue-phone-input)
+
+## The fork
+
+`vue-phone-input-base` keeps the core behavior of the original library and adapts it for our internal style, packaging, and further development needs.
+
+## Features
+
+- Country filtering via `preferred-countries`, `ignored-countries`, or `only-countries`
+- Multiple default country detection strategies:
+  - Browser locale (default, can be disabled with `no-use-browser-locale`)
+  - Network lookup via `fetch-country` (`https://ipwho.is`)
+- Phone formatting while typing
+- Country search in selector dropdown
+- Keyboard navigation support (`ArrowDown`, `ArrowUp`, `Escape`)
+- Country-specific placeholder examples
+- Full UI customization through named slots
 
 ## Installation
 
-using npm
-
 ```bash
-  npm install base-vue-phone-input
+npm i vue-phone-input-base
 ```
 
-## Examples
+## Example
 
-[Demo with shadcn/vue](https://shadcn-vue-phone-input.vercel.app/)
-
-## Usage
-
-```javascript
+```vue
 <script setup lang="ts">
 import { ref } from 'vue'
 import PhoneInput from './index'
@@ -26,58 +38,46 @@ const res = ref()
 </script>
 
 <template>
-    <PhoneInput
-        v-model="tel"// for phone number
-        @update="res = $event"// for phone number object />
-    {{ res }}
-    {{ tel }}
+  <PhoneInput
+    v-model="tel"
+    @update="res = $event"
+  />
+  {{ res }}
+  {{ tel }}
 </template>
-
 ```
-
-But this input is meant to be customized
-
-## Features
-
--   You can set preferred-countries, ignored-countries or have only-countries
--   Multi options to getting country code : By default the component get the country code via the browser (disable it with no-use-browser-locale) or you can use fetch-country to get the country code via https://ip2c.org/s (network needed) - you can use default-country-code option instead to set one
--   Phone number formatting while typing
--   You can search your country in list (open countries list & type your country name)
--   Keyboard accessibility (Arrow down, Arrow up: Countries list navigation - Escape: Close countries list)
--   Phone number example for each country in placeholder
--   Fully cusstomizable with slots
 
 ## Props API
 
-| Prop name                | Description                                                                                                                                         | Type        | Values | Default   |
-|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------| ----------- | ------ | --------- |
-| modelValue               | `@model` Country calling code + telephone number in international format                                                                            | string      | \-     | undefined |
-| countryCode              | `@model` Country code selected - Ex: "FR"                                                                                                           | CountryCode | \-     | undefined |
-| placeholder              | Placeholder of the input                                                                                                                            | string      | \-     | undefined |
-| label                    | label of the input                                                                                                                                  | string      | \-     | undefined |
-| preferredCountries       | List of country codes to place first in the select list - Ex: \['FR', 'BE', 'GE'\]                                                                  | Array       | \-     | undefined |
-| ignoredCountries         | List of country codes to be removed from the select list - Ex: \['FR', 'BE', 'GE'\]                                                                 | Array       | \-     | undefined |
-| onlyCountries            | List of country codes to only have the countries selected in the select list - Ex: \['FR', 'BE', 'GE'\]                                             | Array       | \-     | undefined |
-| translations             | Locale strings of the component                                                                                                                     | Partial     | \-     | undefined |
-| noUseBrowserLocale       | By default the component use the browser locale to set the default country code if not country code is provided                                     | boolean     | \-     |           |
-| fetchCountry             | The component will make a request ([https://ipwho.is](https://ipwho.is)) to get the location of the user and use it to set the default country code | boolean     | \-     |           |
-| customCountriesList      | Replace country names                                                                                                                               | Record      | \-     | undefined |
-| autoFormat               | Disabled auto-format when phone is valid <br>`@default` true                                                                                        | boolean     | \-     | true      |
-| noFormattingAsYouType    | Disabled auto-format as you type <br>`@default` false                                                                                               | boolean     | \-     | false     |
-| phoneNumberDisplayFormat | Display format for a valid number when auto-format is enabled (`national` or `international`) <br>`@default` `national`                             | string      | \-     | national  |
-| countryLocale            | locale of country list - Ex: "fr-FR" <br>`@default` {string} browser locale                                                                         | string      | \-     | undefined |
-| excludeSelectors         | Exclude selectors to close country selector list - usefull when you using custom flag                                                               | Array       | \-     | undefined |
+| Prop name | Description | Type | Values | Default |
+| --- | --- | --- | --- | --- |
+| `modelValue` | `v-model` value: country calling code + phone number (international format) | `string` | - | `undefined` |
+| `countryCode` | `v-model` country code. Example: `"FR"` | `CountryCode` | - | `undefined` |
+| `placeholder` | Input placeholder | `string` | - | `undefined` |
+| `label` | Input label | `string` | - | `undefined` |
+| `preferredCountries` | Countries shown first in the selector. Example: `['FR', 'BE', 'GE']` | `Array` | - | `undefined` |
+| `ignoredCountries` | Countries removed from the selector. Example: `['FR', 'BE', 'GE']` | `Array` | - | `undefined` |
+| `onlyCountries` | Restricts selector to provided countries only. Example: `['FR', 'BE', 'GE']` | `Array` | - | `undefined` |
+| `translations` | Component locale strings | `Partial` | - | `undefined` |
+| `noUseBrowserLocale` | Disables browser-locale based default country detection | `boolean` | - | `false` |
+| `fetchCountry` | Enables network lookup (`https://ipwho.is`) for default country detection | `boolean` | - | `false` |
+| `customCountriesList` | Overrides country names in selector | `Record` | - | `undefined` |
+| `autoFormat` | Enables final valid-number auto-formatting | `boolean` | - | `true` |
+| `noFormattingAsYouType` | Disables as-you-type formatting | `boolean` | - | `false` |
+| `phoneNumberDisplayFormat` | Display mode for valid numbers when auto-format is enabled: `national` or `international` | `string` | `national \| international` | `national` |
+| `countryLocale` | Locale for country list. Example: `"fr-FR"` | `string` | - | browser locale |
+| `excludeSelectors` | Selectors to ignore when handling dropdown close behavior (useful for custom flag UI) | `Array` | - | `undefined` |
 
 ## Events API
 
-| Event | Return |
-| --- | --- |
-| input | [AsYouType value](https://github.com/catamphetamine/libphonenumber-js#as-you-type-formatter) (emit when new value is enter on phone number input && when a country is choosed) |
-| update | All values (Result type) |
+| Event     | Return |
+|-----------| --- |
+| `@input`  | [AsYouType value](https://github.com/catamphetamine/libphonenumber-js#as-you-type-formatter). Emitted on phone input changes and country changes |
+| `@update` | Full result object (`Results` type) |
 
-## Display format
+## Phone Format
 
-Use `phone-number-display-format="international"` to keep the country calling code in the displayed value for valid numbers.
+Use `phone-number-display-format="international"` to keep country calling code visible in the final displayed value.
 
 ```vue
 <PhoneInput
@@ -87,26 +87,26 @@ Use `phone-number-display-format="international"` to keep the country calling co
 />
 ```
 
-## Keyboard accessibility
+## Keyboard Accessibility
 
-| Props     | Action                            |
-| --------- | --------------------------------- |
-| ArrowDown | Navigation down in countries list |
-| ArrowUp   | Navigation up in countries list   |
-| Escape    | Close countries list              |
+| Key | Action |
+| --- | --- |
+| `ArrowDown` | Move down in countries list |
+| `ArrowUp` | Move up in countries list |
+| `Escape` | Close countries list |
 
-## Named slots
+## Named Slots
 
-| Name     | Description                           | Bindings                                                                                                                                                                                     |
-| -------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| selector | Change the country selector component | **input-value** `String` - current selected country code - Ex: `"FR"` **updateInputValue** - action for changing country code by passing country code **countries** - array of all countries |
-| input    | Change the input component            | **input-value** `String` - phone number value **updateInputValue** - action for updating phone value **placeholder** - placeholder                                                           |
+| Name        | Description | Bindings |
+|-------------| --- | --- |
+| `#selector` | Replace country selector UI | `input-value: string` (current country code), `updateInputValue` (country change handler), `countries` (full countries array) |
+| `#input`    | Replace input UI | `input-value: string` (current phone value), `updateInputValue` (phone change handler), `placeholder` |
 
 ## Translations
 
-### Labels & placeholders
+### Labels and placeholders
 
-```javascript
+```vue
 <PhoneInput
   :translations="{
     phoneInput: {
@@ -115,22 +115,21 @@ Use `phone-number-display-format="international"` to keep the country calling co
     },
   }"
 />
-
 ```
 
 ### Country list
 
-Two ways to translate the country list:
+Two supported approaches:
 
-#### First solution - set country locale
+1. Set locale for built-in country names:
 
-```javascript
-<PhoneInput country-locale='fr-FR' />
+```vue
+<PhoneInput country-locale="fr-FR" />
 ```
 
-#### Second solution - custom list
+2. Provide custom country labels:
 
-```javascript
+```vue
 <PhoneInput
   :custom-countries-list="{
     FR: 'France',
@@ -139,14 +138,13 @@ Two ways to translate the country list:
     US: 'Etats-Unis',
   }"
 />
-
 ```
 
 ## Types
 
-Results emitted by @update or @data event
+Results emitted by `@update` (or `@data`, if used in your integration):
 
-```javascript
+```ts
 export type Results = {
   isValid: boolean
   isPossible?: boolean
@@ -159,17 +157,19 @@ export type Results = {
   uri?: string
   e164?: string
   rfc3966?: string
-}
-
+};
 ```
 
-Country type
+Country object shape:
 
-```javascript
+```ts
 export interface Country {
-    iso2: CountryCode
-    dialCode: CountryCallingCode
-    name: string
+  iso2: CountryCode
+  dialCode: CountryCallingCode
+  name: string
 }
-
 ```
+
+---
+**vue-phone-input-base** by Kenny Romanov  
+**base-vue-phone-input** by Vladislav Sidoryk (original)
