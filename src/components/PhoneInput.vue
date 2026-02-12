@@ -236,17 +236,61 @@ function countryChanged(countryCode?: CountryCode) {
     selectPhoneNumberInput()
 }
 
-function setSelectedCountry(countryCode?: string) {
+function normalizeCountryCode(countryCode?: string): CountryCode | undefined {
     if (!countryCode) {
         return
     }
 
-    if (!isCountryAvailable(countryCode)) {
+    const normalizedCode = countryCode.trim().toUpperCase()
+
+    if (!normalizedCode) {
+        return
+    }
+
+    return normalizedCode as CountryCode
+}
+
+function setSelectedCountry(countryCode?: string) {
+    const normalizedCountryCode = normalizeCountryCode(countryCode)
+
+    if (!normalizedCountryCode) {
+        return
+    }
+
+    if (!isCountryAvailable(normalizedCountryCode)) {
         selectedCountry.value = undefined
         return
     }
 
-    selectedCountry.value = countryCode as CountryCode
+    selectedCountry.value = normalizedCountryCode
+}
+
+function formatPlusSevenDisplay(
+    phoneNumber?: string,
+    mode?: PhoneNumberDisplayFormat
+) {
+    if (!phoneNumber || !mode) {
+        return phoneNumber
+    }
+
+    const digits = phoneNumber.replace(/\D/g, '')
+    let localNumber = digits
+
+    if (digits.length === 11 && (digits.startsWith('7') || digits.startsWith('8'))) {
+        localNumber = digits.slice(1)
+    }
+
+    if (localNumber.length !== 10) {
+        return phoneNumber
+    }
+
+    const formattedLocal = `(${localNumber.slice(0, 3)}) ${localNumber.slice(3, 6)}-${localNumber.slice(6, 10)}`
+
+    if (mode === 'international') {
+        return `+7 ${formattedLocal}`
+    }
+
+    return `8 ${formattedLocal}`
 }
 
 function handlePhoneNumberUpdate(
@@ -296,7 +340,13 @@ function handlePhoneNumberUpdate(
             : results.value.formatNational
 
     if (results.value.isValid && autoFormat && formattedByMode) {
-        phoneNumber.value = formattedByMode
+        phoneNumber.value =
+            results.value.countryCallingCode === '7'
+                ? formatPlusSevenDisplay(
+                      formattedByMode,
+                      props.phoneNumberDisplayFormat
+                  ) ?? formattedByMode
+                : formattedByMode
     } else if (!noFormattingAsYouType) {
         const asYouTypeFormatted = getAsYouTypeFormat(
             selectedCountry.value,
@@ -353,7 +403,9 @@ function getCountryPhoneNumberExample(
     selectedCountry?: CountryCode
 ) {
     const example = getPhoneNumberExample(examples, selectedCountry)
-    return example ? `${locales.phoneInput.example} ${example}` : undefined
+    const exampleLabel =
+        locales.value.phoneInput?.example ?? defaultLocales.phoneInput.example
+    return example ? `${exampleLabel} ${example}` : undefined
 }
 
 const inputLabelOrPlaceholder = computed(() => {
@@ -361,7 +413,9 @@ const inputLabelOrPlaceholder = computed(() => {
         return props.placeholder
     }
 
-    const defaultPlaceholder = locales.phoneInput.placeholder
+    const defaultPlaceholder =
+        locales.value.phoneInput?.placeholder ??
+        defaultLocales.phoneInput.placeholder
     if (!examples.value) {
         return defaultPlaceholder
     } else {
