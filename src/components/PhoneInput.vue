@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
     noFormattingAsYouType: false,
     autoFormat: true,
     phoneNumberDisplayFormat: 'national',
-    autoDetectCountryFromPrefix: true,
+    autoDetectCountryFromPrefix: false,
     autoDetectCountryLocalTrunkPrefix: '8',
     autoDetectCountryLocalCallingCodes: () => ['7'],
     excludeSelectors: undefined,
