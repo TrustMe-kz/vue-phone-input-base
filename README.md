@@ -15,6 +15,7 @@ This repository is a fork of: [base-vue-phone-input on npm](https://www.npmjs.co
   - Browser locale (default, can be disabled with `no-use-browser-locale`)
   - Network lookup via `fetch-country` (`https://ipwho.is`)
 - Phone formatting while typing
+- Optional auto country detection from entered prefix (`776...` => `KZ`), configurable via props
 - Country search in selector dropdown
 - Keyboard navigation support (`ArrowDown`, `ArrowUp`, `Escape`)
 - Country-specific placeholder examples
@@ -49,24 +50,27 @@ const res = ref()
 
 ## Props API
 
-| Prop name | Description | Type | Values | Default |
-| --- | --- | --- | --- | --- |
-| `modelValue` | `v-model` value: country calling code + phone number (international format) | `string` | - | `undefined` |
-| `countryCode` | `v-model` country code. Example: `"FR"` | `CountryCode` | - | `undefined` |
-| `placeholder` | Input placeholder | `string` | - | `undefined` |
-| `label` | Input label | `string` | - | `undefined` |
-| `preferredCountries` | Countries shown first in the selector. Example: `['FR', 'BE', 'GE']` | `Array` | - | `undefined` |
-| `ignoredCountries` | Countries removed from the selector. Example: `['FR', 'BE', 'GE']` | `Array` | - | `undefined` |
-| `onlyCountries` | Restricts selector to provided countries only. Example: `['FR', 'BE', 'GE']` | `Array` | - | `undefined` |
-| `translations` | Component locale strings | `Partial` | - | `undefined` |
-| `noUseBrowserLocale` | Disables browser-locale based default country detection | `boolean` | - | `false` |
-| `fetchCountry` | Enables network lookup (`https://ipwho.is`) for default country detection | `boolean` | - | `false` |
-| `customCountriesList` | Overrides country names in selector | `Record` | - | `undefined` |
-| `autoFormat` | Enables final valid-number auto-formatting | `boolean` | - | `true` |
-| `noFormattingAsYouType` | Disables as-you-type formatting | `boolean` | - | `false` |
-| `phoneNumberDisplayFormat` | Display mode for valid numbers when auto-format is enabled: `national` or `international` | `string` | `national \| international` | `national` |
-| `countryLocale` | Locale for country list. Example: `"fr-FR"` | `string` | - | browser locale |
-| `excludeSelectors` | Selectors to ignore when handling dropdown close behavior (useful for custom flag UI) | `Array` | - | `undefined` |
+| Prop name                            | Description                                                                               | Type          | Values                      | Default        |
+|--------------------------------------|-------------------------------------------------------------------------------------------|---------------|-----------------------------|----------------|
+| `modelValue`                         | `v-model` value: country calling code + phone number (international format)               | `string`      | -                           | `undefined`    |
+| `countryCode`                        | `v-model` country code. Example: `"FR"`                                                   | `CountryCode` | -                           | `undefined`    |
+| `placeholder`                        | Input placeholder                                                                         | `string`      | -                           | `undefined`    |
+| `label`                              | Input label                                                                               | `string`      | -                           | `undefined`    |
+| `preferredCountries`                 | Countries shown first in the selector. Example: `['FR', 'BE', 'GE']`                      | `Array`       | -                           | `undefined`    |
+| `ignoredCountries`                   | Countries removed from the selector. Example: `['FR', 'BE', 'GE']`                        | `Array`       | -                           | `undefined`    |
+| `onlyCountries`                      | Restricts selector to provided countries only. Example: `['FR', 'BE', 'GE']`              | `Array`       | -                           | `undefined`    |
+| `translations`                       | Component locale strings                                                                  | `Partial`     | -                           | `undefined`    |
+| `noUseBrowserLocale`                 | Disables browser-locale based default country detection                                   | `boolean`     | -                           | `false`        |
+| `fetchCountry`                       | Enables network lookup (`https://ipwho.is`) for default country detection                 | `boolean`     | -                           | `false`        |
+| `customCountriesList`                | Overrides country names in selector                                                       | `Record`      | -                           | `undefined`    |
+| `autoFormat`                         | Enables final valid-number auto-formatting                                                | `boolean`     | -                           | `true`         |
+| `noFormattingAsYouType`              | Disables as-you-type formatting                                                           | `boolean`     | -                           | `false`        |
+| `autoDetectCountryFromPrefix`        | Auto-detect country while typing based on phone prefix                                    | boolean       | \-                          | true           |
+| `autoDetectCountryLocalTrunkPrefix`  | Local trunk prefix used for auto-detection in non-`+` numbers                             | string        | \-                          | `8`            |
+| `autoDetectCountryLocalCallingCodes` | Calling codes used for auto-detection in non-`+` numbers                                  | Array         | \-                          | `['7']`        |
+| `phoneNumberDisplayFormat`           | Display mode for valid numbers when auto-format is enabled: `national` or `international` | `string`      | `national \| international` | `national`     |
+| `countryLocale`                      | Locale for country list. Example: `"fr-FR"`                                               | `string`      | -                           | browser locale |
+| `excludeSelectors`                   | Selectors to ignore when handling dropdown close behavior (useful for custom flag UI)     | `Array`       | -                           | `undefined`    |
 
 ## Events API
 

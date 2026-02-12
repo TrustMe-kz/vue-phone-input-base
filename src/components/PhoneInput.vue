@@ -33,6 +33,9 @@ const props = withDefaults(defineProps<Props>(), {
     noFormattingAsYouType: false,
     autoFormat: true,
     phoneNumberDisplayFormat: 'national',
+    autoDetectCountryFromPrefix: true,
+    autoDetectCountryLocalTrunkPrefix: '8',
+    autoDetectCountryLocalCallingCodes: () => ['7'],
     excludeSelectors: undefined,
 })
 
@@ -103,6 +106,21 @@ export interface Props {
      */
     phoneNumberDisplayFormat?: PhoneNumberDisplayFormat
     /**
+     * Auto-detect country while typing based on phone prefix
+     * @default true
+     */
+    autoDetectCountryFromPrefix?: boolean
+    /**
+     * Local trunk prefix used for auto-detection in non-`+` numbers
+     * @default '8'
+     */
+    autoDetectCountryLocalTrunkPrefix?: string
+    /**
+     * Calling codes used for auto-detection in non-`+` numbers
+     * @default ['7']
+     */
+    autoDetectCountryLocalCallingCodes?: string[]
+    /**
      * locale of country list - Ex: "fr-FR"
      * @default {string} browser locale
      */
@@ -113,8 +131,12 @@ export interface Props {
 
 const { fetchCountryCode, sanitizePhoneNumber, getBrowserLocale } =
     usePhoneInput()
-const { isCountryAvailable, getPhoneNumberResults, getAsYouTypeFormat } =
-    useLibphonenumber()
+const {
+    isCountryAvailable,
+    getPhoneNumberResults,
+    getAsYouTypeFormat,
+    getCountryByPhoneNumberPrefix,
+} = useLibphonenumber()
 const { getPhoneNumberExamplesFile, getPhoneNumberExample } =
     useLibphonenumber()
 
@@ -322,6 +344,17 @@ function handlePhoneNumberUpdate(
 
     // Sanitize the phone number
     const sanitizedPhoneNumber = sanitizePhoneNumber(newPhoneNumber)
+    const detectedCountryCode = props.autoDetectCountryFromPrefix
+        ? getCountryByPhoneNumberPrefix(sanitizedPhoneNumber, {
+            localTrunkPrefix: props.autoDetectCountryLocalTrunkPrefix,
+            localCallingCodes: props.autoDetectCountryLocalCallingCodes,
+        })
+        : undefined
+    const resolvedCountryCode = detectedCountryCode ?? selectedCountry.value
+
+    if (detectedCountryCode && detectedCountryCode !== selectedCountry.value) {
+        setSelectedCountry(detectedCountryCode)
+    }
 
     // Update the phone number in the component state
     phoneNumber.value = sanitizedPhoneNumber
@@ -330,7 +363,7 @@ function handlePhoneNumberUpdate(
     if (updateResults) {
         results.value = getPhoneNumberResults({
             phoneNumber: sanitizedPhoneNumber,
-            countryCode: selectedCountry.value,
+            countryCode: resolvedCountryCode,
         })
     }
 
@@ -349,7 +382,7 @@ function handlePhoneNumberUpdate(
                 : formattedByMode
     } else if (!noFormattingAsYouType) {
         const asYouTypeFormatted = getAsYouTypeFormat(
-            selectedCountry.value,
+            resolvedCountryCode,
             sanitizedPhoneNumber
         )
         phoneNumber.value = asYouTypeFormatted
