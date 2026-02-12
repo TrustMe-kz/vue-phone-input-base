@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
     countryLocale: undefined,
     noFormattingAsYouType: false,
     autoFormat: true,
-    autoDetectCountryFromPrefix: true,
+    autoDetectCountryFromPrefix: false,
     autoDetectCountryLocalTrunkPrefix: '8',
     autoDetectCountryLocalCallingCodes: () => ['7'],
     excludeSelectors: undefined,
