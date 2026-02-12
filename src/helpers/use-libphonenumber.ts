@@ -81,6 +81,81 @@ function getAsYouTypeFormat(
     }
 }
 
+function getCountryByPhoneNumberPrefix(
+    phoneNumber?: string,
+    options?: {
+        localTrunkPrefix?: string
+        localCallingCodes?: string[]
+    }
+): CountryCode | undefined {
+    try {
+        if (!phoneNumber) {
+            return
+        }
+
+        const normalizedInput = phoneNumber.replace(/[^\d+]/g, '')
+        if (!normalizedInput) {
+            return
+        }
+
+        const resolveCountry = (value: string) => {
+            const parsedNumber = parsePhoneNumberFromString(value)
+
+            if (parsedNumber?.country) {
+                return parsedNumber.country
+            }
+
+            const possibleCountries = parsedNumber?.getPossibleCountries()
+
+            if (possibleCountries?.length === 1) {
+                return possibleCountries[0]
+            }
+        }
+
+        if (normalizedInput.startsWith('+')) {
+            return resolveCountry(normalizedInput)
+        }
+
+        const digits = normalizedInput.replace(/\D/g, '')
+
+        if (digits.length < 3) {
+            return
+        }
+
+        const localTrunkPrefix = options?.localTrunkPrefix ?? '8'
+        const localCallingCodes =
+            options?.localCallingCodes?.filter((code) => !!code) ?? ['7']
+
+        if (digits.startsWith(localTrunkPrefix)) {
+            const localNumber = digits.slice(localTrunkPrefix.length)
+
+            for (const callingCode of localCallingCodes) {
+                const detectedCountryCode = resolveCountry(
+                    `+${callingCode}${localNumber}`
+                )
+
+                if (detectedCountryCode) {
+                    return detectedCountryCode
+                }
+            }
+        }
+
+        for (const callingCode of localCallingCodes) {
+            if (!digits.startsWith(callingCode)) {
+                continue
+            }
+
+            const detectedCountryCode = resolveCountry(`+${digits}`)
+
+            if (detectedCountryCode) {
+                return detectedCountryCode
+            }
+        }
+    } catch (error) {
+        console.warn(`(getCountryByPhoneNumberPrefix) ${error}`)
+    }
+}
+
 async function getPhoneNumberExamplesFile() {
     const { default: data } = await import(
         'libphonenumber-js/examples.mobile.json'
@@ -116,6 +191,7 @@ export function useLibphonenumber() {
 
     return {
         getAsYouTypeFormat,
+        getCountryByPhoneNumberPrefix,
         getPhoneNumberResults,
         getPhoneNumberExamplesFile,
         getPhoneNumberExample,

@@ -42,6 +42,7 @@ But this input is meant to be customized
 -   You can set preferred-countries, ignored-countries or have only-countries
 -   Multi options to getting country code : By default the component get the country code via the browser (disable it with no-use-browser-locale) or you can use fetch-country to get the country code via https://ip2c.org/s (network needed) - you can use default-country-code option instead to set one
 -   Phone number formatting while typing
+-   Optional auto country detection from entered prefix (`776...` => `KZ`), configurable via props
 -   You can search your country in list (open countries list & type your country name)
 -   Keyboard accessibility (Arrow down, Arrow up: Countries list navigation - Escape: Close countries list)
 -   Phone number example for each country in placeholder
@@ -49,23 +50,26 @@ But this input is meant to be customized
 
 ## Props API
 
-| Prop name             | Description                                                                                                                                         | Type        | Values | Default   |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------ | --------- |
-| modelValue            | `@model` Country calling code + telephone number in international format                                                                            | string      | \-     | undefined |
-| countryCode           | `@model` Country code selected - Ex: "FR"                                                                                                           | CountryCode | \-     | undefined |
-| placeholder           | Placeholder of the input                                                                                                                            | string      | \-     | undefined |
-| label                 | label of the input                                                                                                                                  | string      | \-     | undefined |
-| preferredCountries    | List of country codes to place first in the select list - Ex: \['FR', 'BE', 'GE'\]                                                                  | Array       | \-     | undefined |
-| ignoredCountries      | List of country codes to be removed from the select list - Ex: \['FR', 'BE', 'GE'\]                                                                 | Array       | \-     | undefined |
-| onlyCountries         | List of country codes to only have the countries selected in the select list - Ex: \['FR', 'BE', 'GE'\]                                             | Array       | \-     | undefined |
-| translations          | Locale strings of the component                                                                                                                     | Partial     | \-     | undefined |
-| noUseBrowserLocale    | By default the component use the browser locale to set the default country code if not country code is provided                                     | boolean     | \-     |           |
-| fetchCountry          | The component will make a request ([https://ipwho.is](https://ipwho.is)) to get the location of the user and use it to set the default country code | boolean     | \-     |           |
-| customCountriesList   | Replace country names                                                                                                                               | Record      | \-     | undefined |
-| autoFormat            | Disabled auto-format when phone is valid <br>`@default` true                                                                                        | boolean     | \-     | true      |
-| noFormattingAsYouType | Disabled auto-format as you type <br>`@default` false                                                                                               | boolean     | \-     | false     |
-| countryLocale         | locale of country list - Ex: "fr-FR" <br>`@default` {string} browser locale                                                                         | string      | \-     | undefined |
-| excludeSelectors      | Exclude selectors to close country selector list - usefull when you using custom flag                                                               | Array       | \-     | undefined |
+| Prop name                           | Description                                                                                                                                         | Type        | Values | Default   |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------| ----------- | ------ | --------- |
+| modelValue                          | `@model` Country calling code + telephone number in international format                                                                            | string      | \-     | undefined |
+| countryCode                         | `@model` Country code selected - Ex: "FR"                                                                                                           | CountryCode | \-     | undefined |
+| placeholder                         | Placeholder of the input                                                                                                                            | string      | \-     | undefined |
+| label                               | label of the input                                                                                                                                  | string      | \-     | undefined |
+| preferredCountries                  | List of country codes to place first in the select list - Ex: \['FR', 'BE', 'GE'\]                                                                  | Array       | \-     | undefined |
+| ignoredCountries                    | List of country codes to be removed from the select list - Ex: \['FR', 'BE', 'GE'\]                                                                 | Array       | \-     | undefined |
+| onlyCountries                       | List of country codes to only have the countries selected in the select list - Ex: \['FR', 'BE', 'GE'\]                                             | Array       | \-     | undefined |
+| translations                        | Locale strings of the component                                                                                                                     | Partial     | \-     | undefined |
+| noUseBrowserLocale                  | By default the component use the browser locale to set the default country code if not country code is provided                                     | boolean     | \-     |           |
+| fetchCountry                        | The component will make a request ([https://ipwho.is](https://ipwho.is)) to get the location of the user and use it to set the default country code | boolean     | \-     |           |
+| customCountriesList                 | Replace country names                                                                                                                               | Record      | \-     | undefined |
+| autoFormat                          | Disabled auto-format when phone is valid <br>`@default` true                                                                                        | boolean     | \-     | true      |
+| noFormattingAsYouType               | Disabled auto-format as you type <br>`@default` false                                                                                               | boolean     | \-     | false     |
+| autoDetectCountryFromPrefix         | Auto-detect country while typing based on phone prefix                                                                                              | boolean     | \-     | true      |
+| autoDetectCountryLocalTrunkPrefix   | Local trunk prefix used for auto-detection in non-`+` numbers                                                                                       | string      | \-     | `8`       |
+| autoDetectCountryLocalCallingCodes  | Calling codes used for auto-detection in non-`+` numbers                                                                                            | Array       | \-     | `['7']`   |
+| countryLocale                       | locale of country list - Ex: "fr-FR" <br>`@default` {string} browser locale                                                                         | string      | \-     | undefined |
+| excludeSelectors                    | Exclude selectors to close country selector list - usefull when you using custom flag                                                               | Array       | \-     | undefined |
 
 ## Events API
 
